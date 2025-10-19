@@ -1,0 +1,106 @@
+@charset "utf-8";
+/* CSS Document */
+body, html {
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* パララックス効果のため */
+    font-family: 'Pixelify Sans', cursive; /* ゲームっぽいフォント */
+    background-color: #000;
+    color: #fff;
+}
+
+.game-screen {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+}
+
+/* パララックスのレイヤー */
+.background-layer, .middle-layer, .character-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    will-change: transform; /* パフォーマンス改善 */
+}
+
+#background {
+    background: url('./img/test_backimg.png') no-repeat center center/cover;
+    z-index: 1;
+}
+
+#middle {
+    background: url('middle.png') no-repeat center center/cover;
+    z-index: 2;
+}
+
+.character-container {
+    z-index: 3;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+}
+
+.character-image {
+    width: auto; /* 画像サイズ調整 */
+    height: 80vh;
+    cursor: pointer;
+}
+
+/* 吹き出し */
+.speech-bubble {
+    position: absolute;
+    bottom: 400px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #fff;
+    border-radius: 10px;
+    padding: 10px 20px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.5s;
+    pointer-events: none;
+}
+
+.speech-bubble p {
+    margin: 0;
+}
+
+/* メニュー */
+.menu-container {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    z-index: 4;
+    display: flex;
+    gap: 10px;
+}
+
+.menu-item {
+    background: #333;
+    color: #fff;
+    padding: 10px 20px;
+    border: 2px solid #fff;
+    text-decoration: none;
+    transition: transform 0.2s;
+}
+
+.menu-item:hover {
+    transform: scale(1.05);
+}
+
+/* コンテンツセクション */
+.content-section {
+    display: none; /* 初期は非表示 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.9);
+    padding: 20px;
+    z-index: 5;
+    overflow-y: auto;
+}

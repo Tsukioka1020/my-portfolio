@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>月岡ポートフォリオサイト</title>
+<!--<link rel="stylesheet" href="./main.css">-->
+<link rel="stylesheet" href="css/top_text.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=settings" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=settings" />
+<link href="https://fonts.googleapis.com/css2?family=Keania+One&family=M+PLUS+Rounded+1c&family=Zen+Old+Mincho&display=swap" rel="stylesheet">
+<style>
+body, html {
+    margin: 0;
+    padding: 0;
+   /*overflow: hidden; /* パララックス効果のため */
+    font-family: "Zen Old Mincho", sans-serif;
+    background-color: #000;
+    color: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    -webkit-overflow-scrolling: touch;
+}
+/*タイピングフェードイン*/
+.TextTyping span {
+	display: none;
+}
+
+/*文字列後ろの線の設定*/
+.TextTyping::after {
+ 	content: "|";
+	animation: typinganime .8s ease infinite;
+}
+
+@keyframes typinganime{
+	from{opacity:0}
+	to{opacity:1}
+}
+
+/*表示アニメーション*/
+.Slidein_Right{
+    animation: slideIn_R 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    opacity: 0;
+}
+/* アニメーションの基本設定をメニューアイテム全体に適用 */
+.menu-item.Slidein_Right {
+    /* アニメーションを繰り返さない（最後のアニメーション状態を保持） */
+    animation-fill-mode: forwards;
+}
+
+/* 1番目のボタン: 管理者情報 (遅延なし) */
+/* .menu-container > .menu-item:nth-child(1) {
+    animation-delay: 0s; // すでに設定された animation-delay: 1s; をそのまま使うため省略可
+} */
+
+/* 2番目のボタン: 情報収集 (0.2秒遅延) */
+.menu-container > .menu-item:nth-child(2) {
+    animation-delay: 0.2s; /* 1番目の開始から0.2秒遅れて開始 */
+}
+
+/* 3番目のボタン: 資料 (0.4秒遅延) */
+.menu-container > .menu-item:nth-child(3) {
+    animation-delay: 0.4s; /* 1番目の開始から0.4秒遅れて開始 */
+}
+
+/* 4番目のボタン: 進捗 (0.6秒遅延) */
+.menu-container > .menu-item:nth-child(4) {
+    animation-delay: 0.6s; /* 1番目の開始から0.6秒遅れて開始 */
+}
+@keyframes slideIn_R {
+  0% {
+    transform: translateX(-180px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+  }
+  40%,100% {
+    opacity: 1;
+  }
+}
+/*時計*/
+#time-display {
+	font-family: "Keania One", sans-serif;
+	font-size: 5em;
+    z-index: 2;
+	right: 0;
+	padding: 15% 10%;
+    position: fixed;
+    color: #ffffff;
+    text-shadow: rgb(61, 59, 86) 1px 0 10px;
+    /*mix-blend-mode: plus-lighter;*/
+}
+.game-screen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+/* パララックスのレイヤー */
+.background-layer, .middle-layer, .character-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 110%;
+    height: 100%;
+    will-change: transform; /* パフォーマンス改善 */
+}
+#background {
+    background: url('./img/room.webp') no-repeat center center/cover;
+    z-index: 1;
+    filter: blur(3px);
+    opacity: 50%;
+}
+#middle {
+    z-index: 2;
+    display: flex;
+    width: 110%;
+    height: 110%;
+    top: -10px;
+    margin: 0;
+    background: linear-gradient(0deg, #7cffe9, #b163ef);
+    background-size: 200% 200%;
+    animation: Grad 10s 
+ease infinite;
+    align-items: center;
+    justify-content: center;
+    mix-blend-mode: overlay;
+}
+@keyframes Grad {
+    0%{background-position:50% 0%}
+    50%{background-position:50% 100%}
+    100%{background-position:50% 0%}
+}
+.character-container {
+    z-index: 3;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    width: fit-content;
+    position: relative;
+    transition: all 1s;
+}
+.character-image {
+    position: fixed;
+    top: 10%;
+    width: auto; /* 画像サイズ調整 */
+    height: 150vh;
+    cursor: pointer;
+}
+/* 吹き出し */
+.speech-bubble {
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid #fff;
+    border-radius: 10px;
+    padding: 10px 20px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.5s;
+    pointer-events: none;
+}
+.speech-bubble p {
+    margin: 0;
+}
+/* メニュー */
+.menu-container {
+    transform: perspective(250px) rotateY(350deg);
+    position: absolute;
+    bottom: 20%;
+    right: 10%;
+    z-index: 4;
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+    font-size: 20px;
+}
+.menu-item {
+    backdrop-filter: blur(2px);
+    width: 150px;
+    background: linear-gradient(#333333b5, #395863);
+    color: #fff;
+    padding: 10px 20px;
+    border: 2px solid #fff;
+    text-decoration: none;
+    transition: 0.5s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align-last: justify;
+}
+.menu-item:hover {
+    background: linear-gradient(#395863, #1e86ac);
+    letter-spacing:1rem;
+    backdrop-filter: blur(5px);
+    transform: scale(1.05);
+}
+.profile_btn{
+    width: 150px;
+    height: 150px;
+    margin-left: 30px;
+}
+.talk_btn{
+    cursor: pointer;
+    height: 100px;
+    margin-left: 20px;
+}
+.task_btn{
+    margin-left: -20px;
+}
+/* コンテンツセクション */
+.content-section {
+    display: none; /* 初期は非表示 */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+	backdrop-filter: blur(5px);
+    padding: 5% 20px;
+    z-index: 5;
+    overflow-y: auto;
+}
+/*コンテンツ枠*/
+.content-box{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+.content-wrap{
+    padding: 5% 0 20%;
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+}
+/* 会話モード時のメニュー非表示アニメーション */
+.talk-mode .menu-container {
+    animation: fadeOut 1s forwards;
+}
+
+/* 会話モード時の時間表示非表示アニメーション */
+.talk-mode #time-display {
+    animation: fadeOut 1s forwards;
+}
+@keyframes fadeOut {
+    0% {
+        opacity: 1; /*初めに存在する*/
+    }
+    50%{
+        opacity: 0.5;
+        filter: blur(5px);
+    }
+    100% {
+        opacity: 0; /*最後に消える*/
+        filter: blur(10px);
+        display: none;
+    }
+}
+/*会話モードキャラ*/
+.talk-mode .character-container{
+    top: 30%;
+    transform: scale(2);
+}
+/* メッセージウィンドウのスタイル */
+.dialogue-box {
+    display: flex;
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 30vh;
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+    background-image: linear-gradient(2deg, #000 0%, rgba(0, 0, 0, 0.7) 100%);
+    border-radius: 10px;
+    z-index: 10;
+    opacity: 0;
+    pointer-events: none; /* 初期状態ではクリックを無効化 */
+    transition: opacity 0.5s;
+}
+
+/* 会話モード時に表示 */
+.talk-mode .dialogue-box {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#dialogueText {
+    font-size: 1.2em;
+    min-height: 2em; /* テキストがない時もスペースを確保 */
+    white-space: pre-wrap; /* 改行を有効にする */
+}
+
+/* 次へボタンのスタイル */
+.dialogue-buttons {
+    text-align: center;
+    margin-top: 10px;
+}
+
+#nextDialogueBtn {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 2em;
+    cursor: pointer;
+}
+/* 通知バナーの初期スタイル */
+.notification-container {
+    position: fixed;
+    top: 20px;
+    right: -350px; /* 画面外に隠す */
+    width: 300px;
+    padding: 15px 20px;
+    background: rgba(45, 45, 45, 0.9);
+    color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    font-size: 1.1em;
+    opacity: 0;
+    transition: all 0.5s ease-in-out;
+}
+
+/* 通知が表示されるときのスタイル */
+.notification-container.show {
+    right: 20px; /* 画面内にスライドイン */
+    opacity: 1;
+}
+
+/* 通知テキストのスタイル */
+#notificationText {
+    margin: 0;
+}
+/*アイコン*/
+.reset-button {
+    position: fixed;
+    z-index: 4;
+    right: 10%;
+    bottom: 5%;
+    font-size: 5em;
+    text-shadow: rgb(96 166 192) 1px 0 10px;
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24;
+  cursor: pointer;
+}
+/*バツ*/
+.batsu {
+  display: block;
+  position: relative;
+  width: 30px;
+  height: 30px;
+  margin: 10px 20px;
+  opacity: 0.8;
+  transition: 1s;
+}
+.batsu:hover,.batsu:active {
+animation: flicker 2s infinite;
+}
+@keyframes flicker {
+    0%,
+    19%,
+    21%,
+    23%,
+    25%,
+    54%,
+    56%,
+    100% {
+      opacity: 1;
+    }
+    20%,
+    22%,
+    24%,
+    55% {
+      opacity: 0.2;
+    }
+  }
+
+.batsu::before, .batsu::after { /* 共通設定 */
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px; /* 棒の幅（太さ） */
+  height: 30px; /* 棒の高さ */
+  background: #ffffff;
+}
+.batsu::before {
+  transform: translate(-50%,-50%) rotate(45deg);
+}
+ 
+.batsu::after {
+  transform: translate(-50%,-50%) rotate(-45deg);
+}
+/* モーダルオーバーレイ（背景全体） */
+.modal-overlay {
+    display: none; /* 初期状態は非表示 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(3px);
+    z-index: 10000; /* 最前面に表示 */
+    justify-content: center;
+    align-items: center;
+}
+
+/* モーダルウィンドウ本体 */
+.modal-content {
+    background: #222;
+    border: 3px solid #ff00d2; /* ゲーム風のアクセントカラー */
+    padding: 30px 40px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 400px;
+    box-shadow: 0 0 20px rgba(255, 0, 210, 0.5); /* ネオン風の影 */
+    transform: scale(0.8);
+    opacity: 0;
+    transition: all 0.3s ease-out;
+}
+
+/* 表示時のアニメーション */
+.modal-overlay.active .modal-content {
+    transform: scale(1);
+    opacity: 1;
+}
+.modal-overlay.active {
+    display: flex; /* 表示時にflexに変更 */
+}
+
+/* ボタンコンテナ */
+.modal-actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-around;
+}
+
+/* モーダル内のボタン */
+.modal-btn {
+    padding: 10px 20px;
+    border: 2px solid #fff;
+    background: #333;
+    color: #fff;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: background 0.2s, border-color 0.2s;
+}
+.modal-btn.confirm:hover {
+    background: #ff00d2;
+    border-color: #ff00d2;
+}
+
+.modal-btn.cancel:hover {
+    background: #777;
+    border-color: #777;
+}
+.profile-item{
+    margin-bottom: 1rem;
+}
+.text-box{
+    margin: 5% 1rem;
+}
+.text-box img{
+    width: 80%;
+    margin: 5% auto;
+    display: flex;
+    box-shadow: 0 0 20px rgb(0 181 255 / 50%);
+}
+.fadein{
+    animation: fadeIn 1s cubic-bezier(0.33, 1, 0.68, 1) forwards; 
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+footer{
+    position: absolute;
+    z-index: 5;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    text-shadow: 0 0 4px black;
+}
+.content-section.is-active .text-box {
+    /* 既存の記述 */
+    animation: fadeInSlide 0.5s ease-out forwards; 
+    
+    /* ★★★ ここに1秒の遅延を追加します ★★★ */
+    animation-delay: 1s; 
+    
+    /* 既存の記述 */
+    opacity: 1;
+    transform: translateY(0);
+}
+p.comment{
+        line-height: 2rem!important;
+    }
+/* ここに1440px以上で適用したいスタイルを記述 */
+@media (min-width: 1440px) {
+    .profile_btn {
+        width: 250px;
+        height: 250px;
+    }
+    .menu-item{
+        width: 250px;
+    }
+    #time-display{
+        padding: 8% 20%;  
+    }
+    .character-container{
+        margin-left: 10%;
+    }
+    .menu-container{
+        right: 20%;
+    }
+    .batsu{
+        left: 30%; 
+    }
+}
+/* タブレット用スタイル */
+@media screen and (max-width: 1300px) {
+body {
+    font-size: 16px;
+}
+.character-container {
+    width: auto;
+    justify-content: center;
+}
+.content-wrap{
+    width: 90%;
+    padding-bottom: 20%;
+}
+.header-text-box h1{
+    font-size: 1.5em;
+}
+.batsu{
+    left: 0;
+}
+.batsu::before, .batsu::after{
+    height: 30px;
+}
+/* 吹き出し */
+.speech-bubble {
+    position: absolute;
+    bottom: 400px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #fff;
+    border-radius: 10px;
+    padding: 10px 20px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.5s;
+    pointer-events: none;
+}
+.text-box img{
+    width: 50%;
+}
+}
+
+/* スマホ用スタイル */
+@media screen and (max-width: 480px) {
+body {
+    font-size: 14px;
+}
+.character-container {
+    margin-left: -20%;
+}
+.menu-container{
+    right: 0;
+}
+.dialogue-box{
+    width: 80%;
+}
+.profile_btn{
+    width: 100px;
+    height: 100px;
+    margin-left: 30px;
+}
+.talk_btn{
+    height: 100px;
+}
+.menu-item{
+    width: 100px;
+}
+.speech-bubble{
+    bottom: 300px;
+}
+.content-section{
+    padding: 0;
+}
+.content-wrap{
+    padding-top: 10%;
+}
+.text-box img{
+    width: 100%;
+}
+}
+</style>
+</head>
+<body id="app">
+<div class="game-screen">
+  <div class="background-layer" id="background"></div>
+  <div class="middle-layer" id="middle"></div>
+  <div id="time-display"></div>
+  <div class="character-container"> <img src="./img/dairi.webp" alt="キャラクター立ち絵" class="character-image" id="character">
+    <div class="speech-bubble" id="speechBubble">
+      <p id="speechText">こんにちは！</p>
+    </div>
+    </div>
+    <div class="text_display">
+        <div id="dialogueBox" class="dialogue-box">
+           <p id="dialogueText"></p>
+           <div class="dialogue-buttons">
+           </div>
+         </div>
+     </div>
+  <div class="main_frame">
+    <div class="menu-container">
+        <a href="#profile" class="menu-item profile_btn Slidein_Right">管理者<br>情報</a>
+        <a id="talkButton" class="menu-item talk_btn Slidein_Right">情報収集</a>
+        <a href="#album" class="menu-item imgwork_btn Slidein_Right">代行者</a>
+        <a href="#progress" class="menu-item task_btn Slidein_Right">作品</a>
+    </div>
+  </div>
+  <footer>
+<small>© 2025 Tsukioka All Rights Reserved</small>
+    </footer>
+</div>
+<span id="resetButton" class="material-symbols-outlined reset-button">
+    settings
+    </span>
+    <div id="resetModal" class="modal-overlay">
+        <div class="modal-content">
+            <p>⚠️ 会話履歴を全てリセットしますか？</p>
+            <div class="modal-actions">
+                <button id="confirmResetBtn" class="modal-btn confirm">はい</button>
+                <button id="cancelResetBtn" class="modal-btn cancel">いいえ</button>
+            </div>
+        </div>
+    </div>
+<div class="talk-container" id="talkContainer">
+    <button id="closeTalkBtn">×</button>
+</div>
+
+<section id="profile" class="content-section">
+    <div class="content-box">
+        <span class="batsu"></span>
+        <div class="content-wrap">
+            <div class="header-text-box" data-title="管理者情報"> 
+                <h1><span class="header-title-text"></span></h1>
+            </div>
+        <div class="text-box">
+            <img class="fadein" src="./img/my_800_1.webp" id="profileImage"></img>
+        <div class="profile-item">
+          <span>名前:</span>
+          <span class="profile-content" id="name">???</span>
+      </div>
+      <div class="profile-item">
+          <span>スキル:</span>
+          <span class="profile-content" id="skill">???</span>
+      </div>
+      <div class="profile-item">
+          <span>趣味:</span>
+          <span class="profile-content" id="hobby">???</span>
+      </div>
+      <div class="profile-item">
+          <span>好きなゲーム:</span>
+          <span class="profile-content" id="favoriteGame">???</span>
+      </div>
+      <div class="profile-item">
+        <span>作りたいもの:</span>
+        <span class="profile-content" id="concept">???</span>
+    </div>
+      <span>管理者より＞</span>
+      <p class="comment fadeIn inview" id="profileComment">□□□□□□
+    </p>
+    </div>
+    </div>
+    </div>
+</section>
+
+<section id="album" class="content-section">
+    <div class="content-box">
+        <span class="batsu"></span>
+        <div class="content-wrap">
+                <div class="header-text-box" data-title="代行者">
+            <h1><span class="header-title-text"></span></h1>
+        </div>
+        <div class="text-box">
+            <img class="fadein" src="./img/dairinin.png" id="daikousya"></img>
+            <h1>代行者</h1>
+            <p>アンドロイド</p>
+            <p>管理人の代わりに管理人の情報を提供してくれる</p>
+            <p>傷つけないために、握手する時は手袋をしてくれる</p>
+        </div>
+    </div>
+    </div>
+</section>
+
+<section id="progress" class="content-section">
+    <div class="content-box">
+        <span class="batsu"></span>
+        <div class="content-wrap">
+            <div class="header-text-box" data-title="作品">
+                <h1><span class="header-title-text"></span></h1>
+            </div>
+        <div class="text-box"><p>作成したアプリはまだありません</p></div>
+    </div>
+    </div>
+</section>
+
+<div id="notification" class="notification-container">
+    <p id="notificationText"></p>
+</div>
+
+<div class="badges" id="badges"></div>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script src="./js/main.js"></script>
+<script src="./js/fade.js"></script>
+</body>
+</html>
