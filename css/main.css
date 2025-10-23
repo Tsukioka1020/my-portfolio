@@ -97,7 +97,7 @@ body, html {
     will-change: transform; /* パフォーマンス改善 */
 }
 #background {
-    background: url('/img/room.webp') no-repeat center center/cover;
+    background: url('../img/room.webp') no-repeat center center/cover;
     z-index: 1;
     filter: blur(3px);
     opacity: 50%;
@@ -603,3 +603,4 @@ body {
     width: 100%;
 }
 }
+
