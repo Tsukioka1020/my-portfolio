@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const profileData = {
         name: "月丘",
-        skill: "HTML, CSS,JavaScript(苦手)",
+        skill: "HTML、CSS、JavaScript(苦手)",
         hobby: "絵を描くこと、映画鑑賞",
         favoriteGame: "ペルソナ3",
         concept:"人を助けることができるシステムを作る、趣味にも活かす"
@@ -455,3 +455,4 @@ function typeText(element, text, speed) {
             playHeaderAnimation(box);
         }, index * 1000); // 1秒ずつ遅延させて開始 (例: 1つ目 0ms, 2つ目 1000ms, 3つ目 2000ms)
     });
+
